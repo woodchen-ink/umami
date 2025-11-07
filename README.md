@@ -8,6 +8,46 @@
   <i>Umami is a simple, fast, privacy-focused alternative to Google Analytics.</i>
 </p>
 
+## ✨ 增强功能 (本Fork特有)
+
+本仓库在原版基础上新增了以下链接管理功能:
+
+### 自定义短链接标识 (Slug)
+
+链接追踪功能现已支持灵活的自定义标识:
+
+- **可编辑字段**: 手动输入你想要的短链接标识,不再仅限于随机生成
+- **灵活长度**: 最短1个字符 (支持极短标识如 `a`, `251`, `abc`)
+- **随机生成**: 点击刷新按钮可生成9位随机字符标识
+- **实时预览**: 输入时即可看到完整的短链接URL
+
+**使用方法:**
+1. 导航至 Links → Add Link
+2. 输入链接名称和目标URL
+3. 手动输入自定义slug或点击刷新图标生成随机值
+4. 保存并分享你的短链接
+
+### 短URL兼容模式
+
+为兼容旧版短链接服务而设计的自动URL路由:
+
+- **直接访问**: 访问 `https://your-domain.com/251` 而不是 `https://your-domain.com/q/251`
+- **透明重定向**: 不带 `/q/` 前缀的短URL会自动重定向
+- **迁移友好**: 完美适配从其他短链接服务迁移的场景
+
+**工作原理:**
+- 系统自动检测单段URL (如 `/abc123`)
+- 排除已知的应用路由 (`/links`, `/websites`, `/admin` 等)
+- 重定向到链接追踪端点 `/q/[slug]`
+- 通过 Next.js middleware 和 rewrites 实现,兼容性最佳
+
+**示例:**
+```
+原始URL:      https://your-domain.com/251
+自动重定向:   https://your-domain.com/q/251
+最终跳转:     https://destination-url.com
+```
+
 <p align="center">
   <a href="https://github.com/umami-software/umami/releases">
     <img src="https://img.shields.io/github/release/umami-software/umami.svg" alt="GitHub Release" />
