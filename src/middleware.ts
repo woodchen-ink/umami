@@ -3,10 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // 支持 BASE_PATH 环境变量
+  const basePath = process.env.BASE_PATH || '';
+  let normalizedPath = pathname;
+
+  // 如果有 BASE_PATH, 移除它来获取真实路径
+  if (basePath && pathname.startsWith(basePath)) {
+    normalizedPath = pathname.slice(basePath.length) || '/';
+  }
+
   // 匹配根路径下的简短路径 (例如: /251, /abc123, /jiage)
   // 排除已知的路由前缀，如 /api, /q, /p, /_next, 等
   const shortLinkPattern = /^\/([a-zA-Z0-9_-]+)$/;
-  const match = pathname.match(shortLinkPattern);
+  const match = normalizedPath.match(shortLinkPattern);
 
   if (match) {
     const slug = match[1];
@@ -37,7 +46,7 @@ export function middleware(request: NextRequest) {
     if (!excludedPaths.includes(slug)) {
       // 重定向到 /q/[slug]
       const url = request.nextUrl.clone();
-      url.pathname = `/q/${slug}`;
+      url.pathname = basePath + `/q/${slug}`;
 
       // 使用307临时重定向,保持原始请求方法
       return NextResponse.redirect(url, 307);

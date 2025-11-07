@@ -194,6 +194,13 @@ export default {
         source: '/teams/:teamId/:path*',
         destination: '/:path*',
       },
+      // Short link support - catch single path segment and rewrite to /q/:slug
+      // This must be at the end to avoid conflicts with app routes
+      {
+        source:
+          '/:slug((?!api|_next|links|websites|teams|pixels|settings|profile|admin|login|logout|realtime|share|reports|console|dashboard|boards|sso|q|p)[a-zA-Z0-9_-]+)',
+        destination: '/q/:slug',
+      },
     ];
   },
   async redirects() {
