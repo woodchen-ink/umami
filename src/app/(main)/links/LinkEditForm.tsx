@@ -102,35 +102,45 @@ export function LinkEditForm({
               <TextField placeholder="https://example.com" autoComplete="off" />
             </FormField>
 
-            <FormField
-              name="slug"
-              rules={{
-                required: formatMessage(labels.required),
-              }}
-              style={{ display: 'none' }}
-            >
-              <input type="hidden" />
-            </FormField>
-
             <Column>
-              <Label>{formatMessage(labels.link)}</Label>
+              <Label>{formatMessage(labels.slug)}</Label>
               <Row alignItems="center" gap>
-                <TextField
-                  value={`${hostUrl}/${slug}`}
-                  autoComplete="off"
-                  isReadOnly
-                  allowCopy
-                  style={{ width: '100%' }}
-                />
+                <FormField
+                  name="slug"
+                  rules={{
+                    required: formatMessage(labels.required),
+                  }}
+                  style={{ flex: 1 }}
+                >
+                  <TextField
+                    autoComplete="off"
+                    placeholder="custom-slug"
+                    onChange={(e: any) => setSlug(e.target.value)}
+                  />
+                </FormField>
                 <Button
                   variant="quiet"
-                  onPress={() => setValue('slug', handleSlug(), { shouldDirty: true })}
+                  onPress={() => {
+                    const newSlug = handleSlug();
+                    setValue('slug', newSlug, { shouldDirty: true });
+                  }}
                 >
                   <Icon>
                     <RefreshCw />
                   </Icon>
                 </Button>
               </Row>
+            </Column>
+
+            <Column>
+              <Label>{formatMessage(labels.link)}</Label>
+              <TextField
+                value={`${hostUrl}/${slug}`}
+                autoComplete="off"
+                isReadOnly
+                allowCopy
+                style={{ width: '100%' }}
+              />
             </Column>
 
             <Row justifyContent="flex-end" paddingTop="3" gap="3">
