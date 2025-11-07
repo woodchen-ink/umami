@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ lin
   const schema = z.object({
     name: z.string().optional(),
     url: z.string().optional(),
-    slug: z.string().min(8).optional(),
+    slug: z.string().min(1).max(100).optional(),
   });
 
   const { auth, body, error } = await parseRequest(request, schema);
