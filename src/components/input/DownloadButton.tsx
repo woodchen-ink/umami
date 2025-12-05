@@ -1,7 +1,7 @@
+import { Button, Icon, Tooltip, TooltipTrigger } from '@umami/react-zen';
 import Papa from 'papaparse';
-import { Button, Icon, TooltipTrigger, Tooltip } from '@umami/react-zen';
-import { Download } from '@/components/icons';
 import { useMessages } from '@/components/hooks';
+import { Download } from '@/components/icons';
 
 export function DownloadButton({
   filename = 'data',
@@ -19,7 +19,7 @@ export function DownloadButton({
 
   return (
     <TooltipTrigger delay={0}>
-      <Button variant="quiet" onClick={handleClick} isDisabled={!data}>
+      <Button variant="quiet" onClick={handleClick} isDisabled={!data || data.length === 0}>
         <Icon>
           <Download />
         </Icon>
