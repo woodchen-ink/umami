@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 COPY docker/proxy.ts ./src
+RUN rm -f ./src/middleware.ts
 
 ARG BASE_PATH
 

@@ -66,8 +66,62 @@ function disableLogin(request: NextRequest) {
   }
 }
 
+function shortLinkRedirect(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  let normalizedPath = pathname;
+
+  if (BASE_PATH && pathname.startsWith(BASE_PATH)) {
+    normalizedPath = pathname.slice(BASE_PATH.length) || '/';
+  }
+
+  const shortLinkPattern = /^\/([a-zA-Z0-9_-]+)$/;
+  const match = normalizedPath.match(shortLinkPattern);
+
+  if (!match) {
+    return;
+  }
+
+  const slug = match[1];
+  const excludedPaths = new Set([
+    'api',
+    'links',
+    'websites',
+    'teams',
+    'pixels',
+    'settings',
+    'profile',
+    'admin',
+    'login',
+    'logout',
+    'realtime',
+    'share',
+    'reports',
+    'console',
+    'dashboard',
+    'boards',
+    'sso',
+    'q',
+    'p',
+  ]);
+
+  if (excludedPaths.has(slug)) {
+    return;
+  }
+
+  const url = request.nextUrl.clone();
+  url.pathname = `${BASE_PATH}/q/${slug}`;
+
+  return NextResponse.redirect(url, 307);
+}
+
 export default function middleware(req: NextRequest) {
-  const fns = [customCollectEndpoint, customScriptName, customScriptUrl, disableLogin];
+  const fns = [
+    customCollectEndpoint,
+    customScriptName,
+    customScriptUrl,
+    disableLogin,
+    shortLinkRedirect,
+  ];
 
   for (const fn of fns) {
     const res = fn(req);
